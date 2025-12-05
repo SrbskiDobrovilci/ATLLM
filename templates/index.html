@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigaChat Web App</title>
+    <title>Legal GigaChat - AI Legal Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,7 +12,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-robot"></i> GigaChat</h2>
+                <h2><i class="fas fa-balance-scale"></i> Legal GigaChat</h2>
                 <div class="user-info">
                     <span>{{ current_user.username }}</span>
                     <a href="{{ url_for('logout') }}" class="logout-btn">
@@ -20,6 +20,29 @@
                     </a>
                 </div>
             </div>
+            
+            <!-- RAG Status -->
+            {% if rag_enabled and rag_info %}
+            <div class="rag-status">
+                <div class="rag-status-header">
+                    <i class="fas fa-database"></i>
+                    <span>Legal Knowledge Base</span>
+                </div>
+                <div class="rag-status-info">
+                    <div class="rag-stat">
+                        <span class="rag-stat-label">Documents:</span>
+                        <span class="rag-stat-value">{{ rag_info.total_chunks if rag_info.total_chunks else 0 }}</span>
+                    </div>
+                    {% if rag_info.document_types %}
+                    <div class="rag-doc-types">
+                        {% for doc_type, count in rag_info.document_types.items() %}
+                        <span class="doc-type-tag">{{ doc_type }}: {{ count }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
             
             <div class="conversation-controls">
                 <button id="newChatBtn" class="btn btn-primary">
@@ -38,8 +61,23 @@
         <!-- Main Chat Area -->
         <div class="main-content">
             <div class="chat-header" id="chatHeader">
-                <h3 id="conversationTitle">New Conversation</h3>
+                <div class="header-left">
+                    <h3 id="conversationTitle">New Conversation</h3>
+                    <div class="rag-toggle" id="ragToggleContainer" style="display: none;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ragToggle" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Legal Context</span>
+                        </label>
+                        <span class="toggle-help" title="Use legal document knowledge base">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                    </div>
+                </div>
                 <div class="header-actions">
+                    <button id="searchDocsBtn" class="icon-btn" title="Search documents">
+                        <i class="fas fa-search"></i>
+                    </button>
                     <button id="editTitleBtn" class="icon-btn" title="Edit title">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -49,29 +87,59 @@
                 </div>
             </div>
             
+            <!-- Context Sources Panel (hidden by default) -->
+            <div class="context-sources-panel" id="contextSourcesPanel">
+                <div class="panel-header">
+                    <h4><i class="fas fa-file-contract"></i> Legal References</h4>
+                    <button class="close-panel" id="closeSourcesPanel">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="sources-list" id="sourcesList">
+                    <!-- Context sources will be shown here -->
+                </div>
+            </div>
+            
             <div class="chat-messages" id="chatMessages">
-                <!-- Messages will be displayed here -->
                 <div class="welcome-message">
-                    <h3>Welcome to GigaChat!</h3>
-                    <p>Start a new conversation by typing a message below.</p>
+                    <h3><i class="fas fa-balance-scale"></i> Legal AI Assistant</h3>
+                    <p>Ask questions about Russian Federation legislation. The assistant will reference relevant legal documents.</p>
+                    
                     <div class="example-prompts">
-                        <p>Try asking:</p>
+                        <p>Example legal questions:</p>
                         <ul>
-                            <li>"Explain quantum computing in simple terms"</li>
-                            <li>"Write a Python function to sort a list"</li>
-                            <li>"Help me plan a trip to Japan"</li>
+                            <li>"Какие права имеет работник при увольнении?"</li>
+                            <li>"Как оформить договор купли-продажи недвижимости?"</li>
+                            <li>"Какая ответственность за нарушение налогового законодательства?"</li>
+                            <li>"Как происходит наследование по закону?"</li>
+                            <li>"Какие документы нужны для регистрации ИП?"</li>
                         </ul>
                     </div>
+                    
+                    {% if rag_enabled %}
+                    <div class="rag-notice">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Legal knowledge base is active with {{ rag_info.total_chunks if rag_info else 0 }} document chunks</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             
             <div class="chat-input-area">
                 <form id="messageForm">
                     <div class="input-wrapper">
+                        <div class="input-header">
+                            <span class="input-label">
+                                <i class="fas fa-gavel"></i> Legal Question
+                            </span>
+                            <button type="button" id="showSourcesBtn" class="icon-btn-small" title="Show references">
+                                <i class="fas fa-file-contract"></i>
+                            </button>
+                        </div>
                         <textarea 
                             id="messageInput" 
-                            placeholder="Type your message here..." 
-                            rows="1"
+                            placeholder="Type your legal question here... Например: 'Какие документы нужны для развода?'" 
+                            rows="2"
                         ></textarea>
                         <button type="submit" id="sendBtn" class="send-btn">
                             <i class="fas fa-paper-plane"></i>
@@ -79,10 +147,20 @@
                     </div>
                     <div class="input-footer">
                         <div class="model-info">
-                            <i class="fas fa-brain"></i> GigaChat Model
+                            <i class="fas fa-robot"></i> GigaChat Legal Assistant
+                            {% if rag_enabled %}
+                            <span class="rag-badge" id="ragStatusBadge">
+                                <i class="fas fa-database"></i> Legal Context
+                            </span>
+                            {% endif %}
                         </div>
-                        <div class="char-count">
-                            <span id="charCount">0</span> characters
+                        <div class="input-actions">
+                            <button type="button" id="clearContextBtn" class="btn-small" title="Clear context">
+                                <i class="fas fa-broom"></i> Clear
+                            </button>
+                            <div class="char-count">
+                                <span id="charCount">0</span>/4000
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -101,6 +179,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Search Documents Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content wide-modal">
+            <h3><i class="fas fa-search"></i> Search Legal Documents</h3>
+            <div class="search-input-group">
+                <input type="text" id="docSearchInput" placeholder="Search in legal documents...">
+                <button id="performSearchBtn" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+            <div class="search-results" id="searchResults">
+                <!-- Search results will appear here -->
+            </div>
+            <div class="modal-actions">
+                <button id="closeSearchBtn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Sources Tooltip -->
+    <div class="tooltip" id="contextTooltip"></div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

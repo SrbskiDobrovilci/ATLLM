@@ -560,3 +560,401 @@ textarea#messageInput:focus {
         max-width: 90%;
     }
 }
+/* Add these styles to the existing style.css */
+
+/* RAG Status in Sidebar */
+.rag-status {
+    background: linear-gradient(135deg, #3a0ca3, #4361ee);
+    margin: 15px;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+}
+
+.rag-status-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.rag-status-info {
+    font-size: 0.9rem;
+}
+
+.rag-stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.rag-doc-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.doc-type-tag {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+/* RAG Toggle */
+.rag-toggle {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #4361ee;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.toggle-help {
+    color: var(--text-light);
+    cursor: help;
+}
+
+/* Chat Header Layout */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Context Sources Panel */
+.context-sources-panel {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 20px;
+    display: none;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.panel-header h4 {
+    margin: 0;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-panel {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.close-panel:hover {
+    color: var(--text-color);
+}
+
+.sources-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.source-item {
+    background: white;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.source-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.source-title {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.source-confidence {
+    color: var(--success-color);
+    font-size: 0.8rem;
+}
+
+.source-content {
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+.source-meta {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+
+/* RAG Badge */
+.rag-badge {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Message with Context */
+.message.context-used .message-content {
+    border-left: 4px solid #4cc9f0;
+}
+
+.context-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #4cc9f0;
+    margin-top: 5px;
+}
+
+.context-sources-btn {
+    background: none;
+    border: none;
+    color: #4cc9f0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    text-decoration: underline;
+}
+
+.context-sources-btn:hover {
+    color: #3aa8d8;
+}
+
+/* Search Modal */
+.wide-modal {
+    max-width: 800px;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.search-results {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.search-result-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.search-result-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.search-result-title {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.search-result-score {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.search-result-content {
+    color: var(--text-color);
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.search-result-meta {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    max-width: 300px;
+    z-index: 1000;
+    display: none;
+}
+
+/* Input Header */
+.input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.input-label {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.icon-btn-small {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 5px;
+}
+
+.icon-btn-small:hover {
+    color: var(--primary-color);
+}
+
+/* RAG Notice */
+.rag-notice {
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    color: #2e7d32;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Input Actions */
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-small {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-small:hover {
+    background: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Example prompts for legal questions */
+.example-prompts li {
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 3px solid #4361ee;
+}
+
+.example-prompts li:hover {
+    background-color: #e3f2fd;
+    transform: translateX(5px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .rag-toggle {
+        margin-left: 0;
+    }
+    
+    .wide-modal {
+        width: 95%;
+    }
+}
