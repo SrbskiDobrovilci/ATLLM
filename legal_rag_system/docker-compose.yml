@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: legal_rag_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: legal_rag_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
+  legal-rag-app:
+    build: .
+    container_name: legal_rag_app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - REDIS_URL=redis://redis:6379
+      - GIGACHAT_API_KEY=${GIGACHAT_API_KEY}
+    depends_on:
+      - qdrant
+      - redis
+    restart: unless-stopped
