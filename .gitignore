@@ -1,1 +1,9 @@
 .legal_rag_system/dotenv.env
+
+.env
+
+/__pycache__
+
+/instance
+
+/venv

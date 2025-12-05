@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigaChat Web App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-robot"></i> GigaChat</h2>
+                <div class="user-info">
+                    <span>{{ current_user.username }}</span>
+                    <a href="{{ url_for('logout') }}" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="conversation-controls">
+                <button id="newChatBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> New Chat
+                </button>
+                <div class="chat-counter">
+                    Chats: <span id="chatCount">0</span>/{{ max_chats }}
+                </div>
+            </div>
+            
+            <div class="conversations-list" id="conversationsList">
+                <!-- Conversations will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="main-content">
+            <div class="chat-header" id="chatHeader">
+                <h3 id="conversationTitle">New Conversation</h3>
+                <div class="header-actions">
+                    <button id="editTitleBtn" class="icon-btn" title="Edit title">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button id="deleteChatBtn" class="icon-btn btn-danger" title="Delete chat">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be displayed here -->
+                <div class="welcome-message">
+                    <h3>Welcome to GigaChat!</h3>
+                    <p>Start a new conversation by typing a message below.</p>
+                    <div class="example-prompts">
+                        <p>Try asking:</p>
+                        <ul>
+                            <li>"Explain quantum computing in simple terms"</li>
+                            <li>"Write a Python function to sort a list"</li>
+                            <li>"Help me plan a trip to Japan"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <form id="messageForm">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Type your message here..." 
+                            rows="1"
+                        ></textarea>
+                        <button type="submit" id="sendBtn" class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-footer">
+                        <div class="model-info">
+                            <i class="fas fa-brain"></i> GigaChat Model
+                        </div>
+                        <div class="char-count">
+                            <span id="charCount">0</span> characters
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Title Modal -->
+    <div id="editTitleModal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Conversation Title</h3>
+            <input type="text" id="newTitleInput" placeholder="Enter new title...">
+            <div class="modal-actions">
+                <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+                <button id="saveTitleBtn" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
