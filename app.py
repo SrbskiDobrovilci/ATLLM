@@ -780,7 +780,7 @@ def index():
     return render_template('index.html', 
                          conversations=conversations,
                          rag_enabled=app.config['RAG_ENABLED'],
-                         rag_info=rag_info,
+                         rag_info=None,
                          max_chats=app.config['MAX_CONTEXT_CHATS'])
 
 @app.route('/login', methods=['GET', 'POST'])
